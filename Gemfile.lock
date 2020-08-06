@@ -2,10 +2,12 @@ PATH
   remote: .
   specs:
     iterm_color_profiles (0.1.0)
+      plist (~> 3.5.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    plist (3.5.0)
     rake (12.3.3)
 
 PLATFORMS

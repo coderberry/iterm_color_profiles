@@ -1,6 +1,7 @@
 require "iterm_color_profiles/version"
 require "yaml"
 require "json"
+require "plist"
 require "securerandom"
 
 module ItermColorProfiles
@@ -10,16 +11,12 @@ module ItermColorProfiles
     def generate_profiles!
       default_profile = YAML.load(File.read(File.join(File.dirname(__FILE__), "iterm_color_profiles/default_profile.yml")))
       profiles = []
-      profiles << default_profile.clone.merge({
-        "Guid" => SecureRandom.uuid,
-        "Name" => "Default"
-      })
-      puts "COLOR SCHEME NAMES: #{color_scheme_names}"
       color_scheme_names.each do |color|
+        color_plist = Plist.parse_xml("#{File.expand_path('../schemes', __dir__)}/#{color}.itermcolors")
         profiles << default_profile.clone.merge({
           "Guid" => SecureRandom.uuid,
           "Name" => color
-        })
+        }).merge(color_plist)
       end
       build_path = File.expand_path("../build", __dir__)
       File.write("#{build_path}/Profiles.json", { "Profiles" => profiles }.to_json)
